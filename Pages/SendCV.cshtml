@@ -1,0 +1,61 @@
+﻿@page
+@model asp_project.Pages.SendCVModel
+@{
+}
+
+<form method="post">
+
+	<label for="first-name" asp-for="CVModel.FirstName">First Name</label>
+	<input type="text" id="first-name" asp-for="CVModel.FirstName"/>
+
+	<label for="last-name" asp-for="CVModel.LastName">Last Name</label>
+	<input type="text" id="last-name" asp-for="CVModel.LastName"/>
+
+	<label for="email" asp-for="CVModel.Email">Email</label>
+	<input type="email" id="email" asp-for="CVModel.Email"/>
+
+	<label for="confirm-email" asp-for="ConfirmationEmail">Confirm email</label>
+	<input type="email" id="confirm-email" asp-for="ConfirmationEmail" />
+
+	<label asp-for="CVModel.Gender">Gender:</label>
+	<input type="radio" id="male" value="male" asp-for="CVModel.Gender" />
+
+	Male<input type="radio" id="female" value="female" asp-for="CVModel.Gender"/>
+	Female<input type="radio" id="other" value="other" asp-for="CVModel.Gender"/>
+	Other<input type="date" id="date-of-birth" asp-for="CVModel.DateOfBirth" />
+
+	<label for="nationality" asp-for="CVModel.NationalityId">Select your nationality</label>
+	<select asp-for="CVModel.NationalityId"  >
+		<option value="0" selected>Nationality</option>
+		@foreach (var nationality in Model.Db.Nationalities)
+		{
+			<option value="@nationality.Id">@nationality.Name</option>
+		}
+	</select>
+
+	<label>Select your skills</label>
+	@foreach (var skill in Model.Db.Skills)
+	{
+		@skill.Name <input type="checkbox" value="@skill.Id" name="SkillId"/>
+	}
+
+	<div asp-validation-summary="All"></div>
+
+	<span asp-validation-for="X">X</span>
+	<input type="number" asp-for="X"/>
+
+	<span asp-validation-for="Y" >Y</span>
+	<input type="number" asp-for="Y"/>
+
+	<span asp-validation-for="Sum">Sum</span>
+	<input type="number" id="sum" asp-for="Sum"/>
+
+	<input type="submit" value="Submit"/>
+
+</form>
+
+@*@section Scripts {
+	@{
+		<partial name="_ValidationScriptsPartial" />
+	}
+}*@

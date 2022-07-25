@@ -1,0 +1,34 @@
+﻿@page
+@model asp_project.Pages.BrowseCVModel
+@{
+}
+
+<table>
+	<thead>
+		<tr>
+			<th>First Name</th>
+			<th>Last Name</th>
+			<th>Email</th>
+			<th>Gender</th>
+			<th>Grade</th>
+			<th>Select Action</th>
+		</tr>
+	</thead>
+	<tbody>
+		@foreach (var cv in Model.CVModels)
+		{
+			<tr>
+				<td>@cv.FirstName</td>
+				<td>@cv.LastName</td>
+				<td>@cv.Email</td>
+				<td>@cv.Gender</td>
+				<td>@cv.Grade</td>
+				<td>
+					<a asp-page="/SummaryCV" asp-route-id="@cv.Id">details</a>
+					<a asp-route-id="@cv.Id" asp-page="/EditCV">edit</a>
+					<a>delete</a>
+				</td>
+			</tr>
+		}
+	</tbody>
+</table>

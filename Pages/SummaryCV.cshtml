@@ -1,0 +1,16 @@
+﻿@page
+@model asp_project.Pages.SummaryModel
+@{
+}
+
+<h2>@Model.CVModel.FirstName @Model.CVModel.LastName</h2>
+<p>Email: @Model.CVModel.Email</p>
+<p>Gender: @Model.CVModel.Gender</p>
+<p>Nationality: @Model.CVModel.Nationality.Name</p>
+<p>Skills:</p>
+@foreach(var skill in Model.CVModel.Skills)
+{
+	<p>@skill.Name</p>
+}
+<p>Grades: @Model.CVModel.Grade</p>
+
