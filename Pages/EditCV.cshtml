@@ -2,7 +2,10 @@
 @model asp_project.Pages.EditCVModel
 @{
 }
-<form method="post">
+<form method="post" enctype="multipart/form-data">
+
+	<input type="hidden" asp-for="CVModel.Id"/>
+	<input type="hidden" asp-for="CVModel.AppFileId"/>
 
 	<label for="first-name" asp-for="CVModel.FirstName">First Name</label>
 	<input type="text" id="first-name" asp-for="CVModel.FirstName"/>
@@ -48,6 +51,9 @@
 
 	<span asp-validation-for="Sum">Sum</span>
 	<input type="number" id="sum" asp-for="Sum"/>
+
+	<label asp-for="@Model.Image">User Picture</label>
+	<input asp-for="@Model.Image" type="file"/>
 
 	<input type="submit" value="Submit"/>
 

@@ -1,28 +1,37 @@
 using asp_project.Data;
 using asp_project.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Wired.Razor;
+using Wired.RazorPdf;
 
 namespace asp_project.Pages
 {
 	[BindProperties]
     public class SummaryModel : PageModel
     {
-        private ApplicationDbContext _db;
+        [BindNever]
+        public ApplicationDbContext Db { get; set; }
+
+        public string ImageSrc { get; set; }
 
 		public SummaryModel(ApplicationDbContext db)
 		{
-			_db = db;
+			Db = db;
         }
 
         public CVModel CVModel { get; set; }
-        public List<Skill> Skills { get; set; }
-
-		public void OnGet(int id)
+		
+        public void OnGet(int id)
         {
-            CVModel = _db.CVModels.Find(id);
-            CVModel.Nationality = (from x in _db.Nationalities where x.Id == CVModel.NationalityId select x).First();
-            CVModel.Skills = (from skill in _db.Skills from cvskill in _db.CVModelSkill where (cvskill.CVModelsId == id && cvskill.SkillsId == skill.Id) select skill).ToList();
+            
+            CVModel = Db.CVModels.Find(id);
+            CVModel.Nationality = (from x in Db.Nationalities where x.Id == CVModel.NationalityId select x).First();
+            CVModel.Skills = (from skill in Db.Skills from cvskill in Db.CVModelSkill where (cvskill.CVModelsId == id && cvskill.SkillsId == skill.Id) select skill).ToList();
+            AppFile appFile = Db.AppFiles.Find(CVModel.AppFileId);
+
+            ImageSrc = "data:" + appFile.ContentType +";base64," + Convert.ToBase64String(appFile.Data, 0, appFile.Data.Length);
         }
     }
 }

@@ -11,10 +11,8 @@ namespace asp_project.Models
 		[Display(Name ="First name")]
         public string FirstName { get; set; }
         [Display(Name = "Last name")]
-
         public string LastName { get; set; }
         [Display(Name = "Date of birth")]
-
         public DateTime DateOfBirth { get; set; }
         public Nationality? Nationality { get; set; }
         public int NationalityId { get; set; }
@@ -22,6 +20,8 @@ namespace asp_project.Models
         public string Gender { get; set; }
         public ICollection<Skill>? Skills { get; set; }
         public int? Grade { get; set; }
+        public int AppFileId { get; set; }
+        public AppFile? AppFile { get; set; }
 		
     }
 }

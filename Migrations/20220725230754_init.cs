@@ -10,6 +10,21 @@ namespace asp_project.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
+                name: "AppFiles",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ContentType = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Data = table.Column<byte[]>(type: "varbinary(max)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_AppFiles", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Nationalities",
                 columns: table => new
                 {
@@ -47,11 +62,17 @@ namespace asp_project.Migrations
                     NationalityId = table.Column<int>(type: "int", nullable: false),
                     Email = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Gender = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Grade = table.Column<int>(type: "int", nullable: true)
+                    Grade = table.Column<int>(type: "int", nullable: true),
+                    AppFileId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_CVModels", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_CVModels_AppFiles_AppFileId",
+                        column: x => x.AppFileId,
+                        principalTable: "AppFiles",
+                        principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_CVModels_Nationalities_NationalityId",
                         column: x => x.NationalityId,
@@ -115,6 +136,12 @@ namespace asp_project.Migrations
                 });
 
             migrationBuilder.CreateIndex(
+                name: "IX_CVModels_AppFileId",
+                table: "CVModels",
+                column: "AppFileId",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
                 name: "IX_CVModels_NationalityId",
                 table: "CVModels",
                 column: "NationalityId");
@@ -135,6 +162,9 @@ namespace asp_project.Migrations
 
             migrationBuilder.DropTable(
                 name: "Skills");
+
+            migrationBuilder.DropTable(
+                name: "AppFiles");
 
             migrationBuilder.DropTable(
                 name: "Nationalities");

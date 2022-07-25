@@ -3,14 +3,51 @@
 @{
 }
 
-<h2>@Model.CVModel.FirstName @Model.CVModel.LastName</h2>
-<p>Email: @Model.CVModel.Email</p>
-<p>Gender: @Model.CVModel.Gender</p>
-<p>Nationality: @Model.CVModel.Nationality.Name</p>
-<p>Skills:</p>
-@foreach(var skill in Model.CVModel.Skills)
+<div id="container">
+    <h2>@Model.CVModel.FirstName @Model.CVModel.LastName</h2>
+    <p>Email: @Model.CVModel.Email</p>
+    <p>Gender: @Model.CVModel.Gender</p>
+    <p>Nationality: @Model.CVModel.Nationality.Name</p>
+    <p>Skills:</p>
+    @foreach(var skill in Model.CVModel.Skills)
+    {
+	    <p>@skill.Name</p>
+    }
+    <p>Grades: @Model.CVModel.Grade</p>
+    <img src="@Model.ImageSrc" alt="user picture"/>
+</div>
+<button id="pdf">Download pdf</button>
+<button id="word">Download word</button>
+@section Scripts
 {
-	<p>@skill.Name</p>
-}
-<p>Grades: @Model.CVModel.Grade</p>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js" integrity="sha512-GsLlZN/3F2ErC5ifS5QtgpiJtWd43JWSuIgh7mbzZ8zBps+dvLusV+eNQATqgA/HdeKFVgA5v3S/cIrLF7QnIg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script>
+        const b1 = document.getElementById('pdf')
+        const pdf = () => {
+            html2pdf(document.getElementById('container'))
+        }
+        b1.addEventListener('click', pdf)
 
+        const b2 = document.getElementById('word')
+
+        const word = () => {
+           const header = `<html xmlns:o='urn:schemas-microsoft-com:office:office'
+                xmlns:w='urn:schemas-microsoft-com:office:word'
+                xmlns='http://www.w3.org/TR/REC-html40'>
+                <head><meta charset='utf-8'><title>Export HTML to Word Document with JavaScript</title></head><body>`
+       
+           const sourceHTML = header + document.getElementById('container').innerHTML
+       
+           const source = 'data:application/vnd.ms-word;charset=utf-8,' + encodeURIComponent(sourceHTML)
+           const fileDownload = document.createElement('a')
+           document.body.appendChild(fileDownload)
+           fileDownload.href = source
+           fileDownload.download = 'document.doc'
+           fileDownload.click()
+           document.body.removeChild(fileDownload)
+        }
+
+        b2.addEventListener('click', word)
+        </script>
+}

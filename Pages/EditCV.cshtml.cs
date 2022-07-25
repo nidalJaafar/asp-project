@@ -2,7 +2,6 @@ using asp_project.Models;
 using asp_project.Data;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using System.ComponentModel.DataAnnotations;
 
@@ -13,8 +12,6 @@ namespace asp_project.Pages
     {
         [BindNever]
         public ApplicationDbContext Db { get; set; }
-        [BindNever]
-        public int Id { get; set; }
 
         public CVModel CVModel { get; set; }
 
@@ -25,9 +22,10 @@ namespace asp_project.Pages
         public int Y { get; set; }
         public int Sum { get; set; }
         public string ConfirmationEmail { get; set; }
+        public IFormFile Image { get; set; }
         public EditCVModel(ApplicationDbContext db)
         {
-            this.Db = db;
+            Db = db;
         }
 
         public void OnGet(int id)
@@ -37,6 +35,29 @@ namespace asp_project.Pages
 
         public IActionResult OnPost(int[] skillId)
         {
+            var cvModelSkills = (from s in Db.CVModelSkill where s.CVModelsId == CVModel.Id select s);
+            Db.CVModelSkill.RemoveRange(cvModelSkills);
+            Db.SaveChanges();
+
+            int appFileId = CVModel.AppFileId;
+
+            MemoryStream memoryStream = new MemoryStream();
+            Image.CopyTo(memoryStream);
+
+            if (memoryStream.Length < 20971520)
+            {
+                AppFile file = new AppFile()
+                {
+                    Data = memoryStream.ToArray(),
+                    ContentType = Image.ContentType,
+                    Name = Image.Name
+                };
+
+                Db.AppFiles.Add(file);
+                Db.SaveChanges();
+                CVModel.AppFileId = file.Id;
+            }
+
             int Grade = 0;
 
             if (!CVModel.Email.Equals(ConfirmationEmail))
@@ -61,8 +82,9 @@ namespace asp_project.Pages
                 }
                 CVModel.Skills = skills;
                 CVModel.Grade = Grade + (CVModel.Gender.Equals("male") ? 5 : 10);
-                /*Db.Attach(CVModel).State = EntityState.Modified;*/
-                /*Db.CVModels.Update(CVModel);*/
+                Db.CVModels.Update(CVModel);
+                Db.SaveChanges();
+                Db.AppFiles.Remove(Db.AppFiles.Find(appFileId));
                 Db.SaveChanges();
                 return RedirectToPage("SummaryCV", new { id = CVModel.Id });
             }

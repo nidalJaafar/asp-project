@@ -18,18 +18,37 @@ namespace asp_project.Pages
         [Range(1, 20, ErrorMessage = "X should be between 1 and 20")]
         public int X { get; set; }
 
-        [Range(20, 50, ErrorMessage = "Y should be between 1 and 20")]
+        [Range(20, 50, ErrorMessage = "Y should be between 20 and 50")]
         public int Y { get; set; }
         public int Sum { get; set; }
         public string ConfirmationEmail { get; set; }
+        public IFormFile Image { get; set; }
+
         public SendCVModel(ApplicationDbContext db)
         {
-            this.Db = db;
+            Db = db;
         }
 
         public IActionResult OnPost(int[] skillId)
         {
             int Grade = 0;
+
+            MemoryStream memoryStream = new MemoryStream();
+            Image.CopyTo(memoryStream);
+
+            if (memoryStream.Length < 20971520)
+            {
+                AppFile file = new AppFile()
+                {
+                    Data = memoryStream.ToArray(),
+                    ContentType = Image.ContentType,
+                    Name = Image.Name
+                };
+
+                Db.AppFiles.Add(file);
+                Db.SaveChanges();
+                CVModel.AppFileId = file.Id;
+            }
 
             if (!CVModel.Email.Equals(ConfirmationEmail))
             {

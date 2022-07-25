@@ -24,9 +24,9 @@
 				<td>@cv.Gender</td>
 				<td>@cv.Grade</td>
 				<td>
-					<a asp-page="/SummaryCV" asp-route-id="@cv.Id">details</a>
+					<a asp-route-id="@cv.Id" asp-page="/SummaryCV">details</a>
 					<a asp-route-id="@cv.Id" asp-page="/EditCV">edit</a>
-					<a>delete</a>
+					<a asp-route-id="@cv.Id" asp-page="/DeleteCV">delete</a>
 				</td>
 			</tr>
 		}

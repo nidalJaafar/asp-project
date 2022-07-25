@@ -15,6 +15,8 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="6.0.6" />
+    <PackageReference Include="RazorPDF" Version="1.0.0" />
+    <PackageReference Include="Wired.RazorPdf" Version="1.0.0" />
   </ItemGroup>
 
 </Project>

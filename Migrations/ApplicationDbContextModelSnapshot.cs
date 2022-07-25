@@ -22,6 +22,31 @@ namespace asp_project.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
 
+            modelBuilder.Entity("asp_project.Models.AppFile", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<string>("ContentType")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<byte[]>("Data")
+                        .IsRequired()
+                        .HasColumnType("varbinary(max)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("AppFiles");
+                });
+
             modelBuilder.Entity("asp_project.Models.CVModel", b =>
                 {
                     b.Property<int>("Id")
@@ -29,6 +54,9 @@ namespace asp_project.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<int>("AppFileId")
+                        .HasColumnType("int");
 
                     b.Property<DateTime>("DateOfBirth")
                         .HasColumnType("datetime2");
@@ -56,6 +84,9 @@ namespace asp_project.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("AppFileId")
+                        .IsUnique();
 
                     b.HasIndex("NationalityId");
 
@@ -197,11 +228,19 @@ namespace asp_project.Migrations
 
             modelBuilder.Entity("asp_project.Models.CVModel", b =>
                 {
+                    b.HasOne("asp_project.Models.AppFile", "AppFile")
+                        .WithOne()
+                        .HasForeignKey("asp_project.Models.CVModel", "AppFileId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
                     b.HasOne("asp_project.Models.Nationality", "Nationality")
                         .WithMany()
                         .HasForeignKey("NationalityId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("AppFile");
 
                     b.Navigation("Nationality");
                 });

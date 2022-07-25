@@ -13,6 +13,7 @@ namespace asp_project.Data
         public DbSet<Nationality> Nationalities { get; set; }
         public DbSet<Skill> Skills { get; set; }
         public DbSet<CVModelSkill> CVModelSkill { get; set; }
+        public DbSet<AppFile> AppFiles { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<CVModelSkill>()
@@ -21,6 +22,10 @@ namespace asp_project.Data
                 .HasMany<Skill>(s => s.Skills)
                 .WithMany(c => c.CVModels)
                 .UsingEntity<CVModelSkill>();
+            modelBuilder.Entity<CVModel>()
+                .HasOne(c => c.AppFile)
+                .WithOne()
+                .OnDelete(DeleteBehavior.NoAction);
 
             modelBuilder.Entity<Nationality>()
                 .HasData
