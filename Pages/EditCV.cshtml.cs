@@ -12,17 +12,14 @@ namespace asp_project.Pages
     {
         [BindNever]
         public ApplicationDbContext Db { get; set; }
-
         public CVModel CVModel { get; set; }
-
         [Range(1, 20, ErrorMessage = "X should be between 1 and 20")]
         public int X { get; set; }
-
         [Range(20, 50, ErrorMessage = "Y should be between 1 and 20")]
         public int Y { get; set; }
         public int Sum { get; set; }
         public string ConfirmationEmail { get; set; }
-        public IFormFile Image { get; set; }
+        public IFormFile? Image { get; set; }
         public EditCVModel(ApplicationDbContext db)
         {
             Db = db;
@@ -38,28 +35,14 @@ namespace asp_project.Pages
             var cvModelSkills = (from s in Db.CVModelSkill where s.CVModelsId == CVModel.Id select s);
             Db.CVModelSkill.RemoveRange(cvModelSkills);
             Db.SaveChanges();
-
             int appFileId = CVModel.AppFileId;
-
-            MemoryStream memoryStream = new MemoryStream();
-            Image.CopyTo(memoryStream);
-
-            if (memoryStream.Length < 20971520)
-            {
-                AppFile file = new AppFile()
-                {
-                    Data = memoryStream.ToArray(),
-                    ContentType = Image.ContentType,
-                    Name = Image.Name
-                };
-
-                Db.AppFiles.Add(file);
-                Db.SaveChanges();
-                CVModel.AppFileId = file.Id;
-            }
+            
 
             int Grade = 0;
-
+            if(Image == null)
+            {
+                ModelState.AddModelError("Image", "Image is required");
+            }
             if (!CVModel.Email.Equals(ConfirmationEmail))
             {
                 ModelState.AddModelError("CVModel.Email", "The confirmation email does not match");
@@ -82,6 +65,20 @@ namespace asp_project.Pages
                 }
                 CVModel.Skills = skills;
                 CVModel.Grade = Grade + (CVModel.Gender.Equals("male") ? 5 : 10);
+                MemoryStream memoryStream = new MemoryStream();
+                Image.CopyTo(memoryStream);
+                if (memoryStream.Length < 20971520)
+                {
+                    AppFile file = new AppFile()
+                    {
+                        Data = memoryStream.ToArray(),
+                        ContentType = Image.ContentType,
+                        Name = Image.Name
+                    };
+                    Db.AppFiles.Add(file);
+                    Db.SaveChanges();
+                    CVModel.AppFileId = file.Id;
+                }
                 Db.CVModels.Update(CVModel);
                 Db.SaveChanges();
                 Db.AppFiles.Remove(Db.AppFiles.Find(appFileId));

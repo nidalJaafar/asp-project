@@ -1,59 +1,95 @@
 ﻿@page
 @model asp_project.Pages.SendCVModel
 @{
+	ViewData["Title"] = "Send CV";
 }
 
 <form method="post" enctype="multipart/form-data">
 
-	<label for="first-name" asp-for="CVModel.FirstName">First Name</label>
-	<input type="text" id="first-name" asp-for="CVModel.FirstName"/>
+	<div class="form-group">
+		<input type="text" id="first-name" asp-for="CVModel.FirstName" />
+		<label for="first-name" asp-for="CVModel.FirstName">First Name</label>
+	</div>
 
-	<label for="last-name" asp-for="CVModel.LastName">Last Name</label>
-	<input type="text" id="last-name" asp-for="CVModel.LastName"/>
+	<div class="form-group">
+		<input type="text" id="last-name" asp-for="CVModel.LastName" />
+		<label for="last-name" asp-for="CVModel.LastName">Last Name</label>
+	</div>
+	<div class="form-group">
+		<input type="email" id="email" asp-for="CVModel.Email" />
+		<label for="email" asp-for="CVModel.Email">Email</label>
+	</div>
+	<div class="form-group">
+		<input type="email" id="confirm-email" asp-for="ConfirmationEmail" />
+		<label for="confirm-email" asp-for="ConfirmationEmail">Confirm email</label>
+	</div>
+	<label class="form-check-label" asp-for="CVModel.Gender">Gender:</label>
 
-	<label for="email" asp-for="CVModel.Email">Email</label>
-	<input type="email" id="email" asp-for="CVModel.Email"/>
+	<div class="form-check">
+		<input class="form-check-input" type="radio" id="male" value="male" asp-for="CVModel.Gender" />
+		<label for="male" class="form-check-label" asp-for="CVModel.Gender">Male</label>
+	</div>
 
-	<label for="confirm-email" asp-for="ConfirmationEmail">Confirm email</label>
-	<input type="email" id="confirm-email" asp-for="ConfirmationEmail" />
+	<div class="form-check">
+		<input class="form-check-input" type="radio" id="female" value="female" asp-for="CVModel.Gender" />
+		<label for="female" class="form-check-label" asp-for="CVModel.Gender">Female</label>
+	</div>
 
-	<label asp-for="CVModel.Gender">Gender:</label>
-	<input type="radio" id="male" value="male" asp-for="CVModel.Gender" />
+	<div class="form-check">
+		<input class="form-check-input" type="radio" id="other" value="other" asp-for="CVModel.Gender" />
+		<label for="other" class="form-check-label" asp-for="CVModel.Gender">Other</label>
+	</div>
 
-	Male<input type="radio" id="female" value="female" asp-for="CVModel.Gender"/>
-	Female<input type="radio" id="other" value="other" asp-for="CVModel.Gender"/>
-	Other<input type="date" id="date-of-birth" asp-for="CVModel.DateOfBirth" />
+	<div class="form-group">
 
-	<label for="nationality" asp-for="CVModel.NationalityId">Select your nationality</label>
-	<select asp-for="CVModel.NationalityId"  >
-		<option value="0" selected>Nationality</option>
-		@foreach (var nationality in Model.Db.Nationalities)
-		{
-			<option value="@nationality.Id">@nationality.Name</option>
-		}
-	</select>
+		<label for="date-of-birth">Date of birth</label>
+		<input type="date" id="date-of-birth" asp-for="CVModel.DateOfBirth" />
+
+	</div>
+	<div class="form-group">
+
+		<label for="nationality" asp-for="CVModel.NationalityId">Select your nationality</label>
+		<select class="form-control" asp-for="CVModel.NationalityId">
+			<option value="0" selected>Nationality</option>
+			@foreach (var nationality in Model.Db.Nationalities)
+			{
+				<option value="@nationality.Id">@nationality.Name</option>
+			}
+		</select>
+	</div>
 
 	<label>Select your skills</label>
 	@foreach (var skill in Model.Db.Skills)
 	{
-		@skill.Name <input type="checkbox" value="@skill.Id" name="SkillId"/>
+		<div class="form-check">
+			<input type="checkbox" value="@skill.Id" name="SkillId" /> @skill.Name
+		</div>
 	}
 
-	<div asp-validation-summary="All"></div>
+	<div class="form-group">
 
-	<span asp-validation-for="X">X</span>
-	<input type="number" asp-for="X"/>
+		<label asp-for="@Model.Image">User Picture</label>
+		<input class="form-control-file" asp-for="@Model.Image" type="file" />
+	</div>
 
-	<span asp-validation-for="Y" >Y</span>
-	<input type="number" asp-for="Y"/>
+	<div class="text-danger" asp-validation-summary="All"></div>
 
-	<span asp-validation-for="Sum">Sum</span>
-	<input type="number" id="sum" asp-for="Sum"/>
+	<div class="form-group">
+		<input type="number" asp-for="X" />
+		<span asp-validation-for="X">X</span>
+	</div>
 
-	<label asp-for="@Model.Image">User Picture</label>
-	<input asp-for="@Model.Image" type="file"/>
+	<div class="form-group">
+		<input type="number" asp-for="Y" />
+		<span asp-validation-for="Y">Y</span>
+	</div>
+	<div class="form-group">
 
-	<input type="submit" value="Submit"/>
+		<input type="number" id="sum" asp-for="Sum" />
+		<span asp-validation-for="Sum">Sum</span>
+	</div>
+
+	<input class="btn btn-primary" type="submit" value="Submit" />
 
 </form>
 
@@ -61,4 +97,4 @@
 	@{
 		<partial name="_ValidationScriptsPartial" />
 	}
-}
+	}

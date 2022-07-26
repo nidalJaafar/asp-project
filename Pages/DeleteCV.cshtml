@@ -2,3 +2,13 @@
 @model asp_project.Pages.DeleteCVModel
 @{
 }
+
+<h1>Are you sure?</h1>
+<form method="post">
+	<input type="hidden" asp-for="CVModel.Id" />
+	<input type="hidden" asp-for="CVModel.AppFileId" />
+
+	<input type="submit" class="btn btn-danger" value="Yes" />
+</form>
+<br />
+<a class="btn btn-primary" asp-page="/BrowseCv">No</a>

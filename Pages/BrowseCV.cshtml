@@ -1,9 +1,10 @@
 ﻿@page
 @model asp_project.Pages.BrowseCVModel
 @{
+	ViewData["Title"] = "Browse CVs";
 }
 
-<table>
+<table class="table">
 	<thead>
 		<tr>
 			<th>First Name</th>
@@ -15,7 +16,7 @@
 		</tr>
 	</thead>
 	<tbody>
-		@foreach (var cv in Model.CVModels)
+		@foreach (var cv in Model.Db.CVModels)
 		{
 			<tr>
 				<td>@cv.FirstName</td>

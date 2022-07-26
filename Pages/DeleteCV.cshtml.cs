@@ -14,15 +14,22 @@ namespace asp_project.Pages
             Db = db;
         }
 
-        public IActionResult OnGet(int id)
-        {   
-            CVModel cvModel = Db.CVModels.Find(id);
-            var cvModelSkills = (from s in Db.CVModelSkill where s.CVModelsId == cvModel.Id select s);
+        [BindProperty]
+        public CVModel CVModel { get; set; }
+
+        public void OnGet(int id)
+        {
+            CVModel = Db.CVModels.Find(id);
+        }
+
+        public IActionResult OnPost()
+        {
+            var cvModelSkills = (from s in Db.CVModelSkill where s.CVModelsId == CVModel.Id select s);
             Db.CVModelSkill.RemoveRange(cvModelSkills);
-            Db.CVModels.Remove(cvModel);
-            Db.AppFiles.Remove(Db.AppFiles.Find(cvModel.AppFileId));
+            Db.CVModels.Remove(CVModel);
+            Db.AppFiles.Remove(Db.AppFiles.Find(CVModel.AppFileId));
             Db.SaveChanges();
-            return RedirectToPage("BrowseCV");
+            return RedirectToPage("/BrowseCV");
         }
     }
 }

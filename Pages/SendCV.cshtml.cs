@@ -12,17 +12,14 @@ namespace asp_project.Pages
     {
         [BindNever]
         public ApplicationDbContext Db { get; set; }
-
         public CVModel CVModel { get; set; }
-
         [Range(1, 20, ErrorMessage = "X should be between 1 and 20")]
         public int X { get; set; }
-
         [Range(20, 50, ErrorMessage = "Y should be between 20 and 50")]
         public int Y { get; set; }
         public int Sum { get; set; }
         public string ConfirmationEmail { get; set; }
-        public IFormFile Image { get; set; }
+        public IFormFile? Image { get; set; }
 
         public SendCVModel(ApplicationDbContext db)
         {
@@ -33,23 +30,10 @@ namespace asp_project.Pages
         {
             int Grade = 0;
 
-            MemoryStream memoryStream = new MemoryStream();
-            Image.CopyTo(memoryStream);
-
-            if (memoryStream.Length < 20971520)
+            if (Image == null)
             {
-                AppFile file = new AppFile()
-                {
-                    Data = memoryStream.ToArray(),
-                    ContentType = Image.ContentType,
-                    Name = Image.Name
-                };
-
-                Db.AppFiles.Add(file);
-                Db.SaveChanges();
-                CVModel.AppFileId = file.Id;
+                ModelState.AddModelError("Image", "Image is required");
             }
-
             if (!CVModel.Email.Equals(ConfirmationEmail))
             {
                 ModelState.AddModelError("CVModel.Email", "The confirmation email does not match");
@@ -64,6 +48,20 @@ namespace asp_project.Pages
             }
             if (ModelState.IsValid)
             {
+                MemoryStream memoryStream = new MemoryStream();
+                Image.CopyTo(memoryStream);
+                if (memoryStream.Length < 20971520)
+                {
+                    AppFile file = new AppFile()
+                    {
+                        Data = memoryStream.ToArray(),
+                        ContentType = Image.ContentType,
+                        Name = Image.Name
+                    };
+                    Db.AppFiles.Add(file);
+                    Db.SaveChanges();
+                    CVModel.AppFileId = file.Id;
+                }
                 List<Skill> skills = new List<Skill>();
                 foreach (var id in skillId)
                 {
